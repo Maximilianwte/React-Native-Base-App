@@ -28,7 +28,7 @@ export default class TheMoodBar extends React.Component {
         });
       }
     );
-    this.setState({barActive: false})
+    /* this.setState({barActive: false}) */
   };
   handleButtonStyle(id) {
     return id == this.state.activeButton
