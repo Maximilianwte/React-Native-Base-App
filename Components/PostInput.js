@@ -9,20 +9,34 @@ import {
   Modal,
 } from "react-native";
 
+
+
+import store from "../store/store";
+import postData from "../store/reducers/posts";
+import { addPost } from "../store/actions";
+
 export default class PostInput extends React.Component {
   state = {
-    text: "Hello",
     userInput: "",
     active: false,
+    postData: postData,
   };
   closeLayer() {
+    this.addPost();
     this.setState({ active: false });
   }
   onTextChange(text) {
     this.setState({ userInput: text });
   }
+  addPost() {
+    var data = {
+      user: "DierkXCutie",
+      text: this.state.userInput,
+    };
+    store.dispatch(addPost(data));
+  }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(nextProps) {
     // You don't have to do this check first, but it can help prevent an unneeded render
     if (nextProps.active !== this.state.active) {
       this.setState({ active: nextProps.active });
@@ -38,7 +52,9 @@ export default class PostInput extends React.Component {
           visible={this.state.active}
         >
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>{"Enter your text here: " + this.state.userInput}</Text>
+            <Text style={styles.modalText}>
+              {"Enter your text here: " + this.state.postData.length}
+            </Text>
             <TextInput
               style={styles.textInput}
               onChangeText={(text) => this.onTextChange(text)}

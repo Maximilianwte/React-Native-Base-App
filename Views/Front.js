@@ -1,31 +1,49 @@
 import React from "react";
 import { StyleSheet, Text, View, FlatList, Dimensions } from "react-native";
+import {connect} from "react-redux";
 
 import TheMoodBar from "../Components/TheMoodBar";
 
-export default class Front extends React.Component {
-  state = {
-    message: "Hey Max.",
-    prop: this.props.style,
-    textItemData: [{num: 1, post: "I am in love right now. Have fun everyone." },
-    {num: 2, post: "In the last week I learned cooking. That was soo awesome :)." }],
-  };
-  handleButton = () => {
-    this.setState({
-      message: "Button was clicked",
-    });
-  };
+import store from "../store/store";
+import postData from "../store/reducers/posts";
+
+class Front extends React.Component {
+  handleTimestamp(timestamp) {
+    if (timestamp == undefined) {
+      return null;
+    } else {
+      var date = new Date();
+      var timeNow = date.getTime();
+      var hours = Math.abs(timeNow - timestamp) / 36e5;
+      if (hours < 1) {
+        return "Less than one hour ago."
+      }
+      else {
+        return parseInt(hours) + " hours ago.";
+      }
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <TheMoodBar />
         <View styles={styles.contentContainer}>
-          <Text style={styles.text}>{"These are your " + this.state.textItemData.length +" most recent posts."}</Text>
+          <Text style={styles.text}>
+            {"These are your " +
+              this.props.postData.length +
+              " most recent posts."}
+          </Text>
           <FlatList
             style={styles.postList}
-            data={this.state.textItemData}
+            data={this.props.postData}
             renderItem={({ item }) => (
-              <Text style={styles.textItem}>{item.num + ". " + item.post}</Text>
+              <View style={styles.postContainer}>
+                <Text style={styles.post}>{item.id + ". " + item.text}</Text>
+                <Text style={styles.postUser}>
+                  - {item.user} - {this.handleTimestamp(item.timestamp)}
+                </Text>
+              </View>
             )}
           />
         </View>
@@ -38,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    backgroundColor: "#2d2d2d",
+    backgroundColor: "#1B272E",
   },
   headerContainer: {
     flex: 1,
@@ -60,13 +78,32 @@ const styles = StyleSheet.create({
     color: "white",
   },
   postList: {
-    marginLeft: 30,
     marginTop: 15,
-    width: Dimensions.get("window").width / 4 * 3,
+    width: Dimensions.get("window").width,
   },
-  textItem: {
+  postContainer: {
+    backgroundColor: "#4A5861",
+    width: Dimensions.get("window").width,
+  },
+  post: {
     color: "white",
+    paddingHorizontal: 30,
+    paddingTop: 10,
+    paddingBottom: 5,
     fontSize: 18,
-    marginTop: 5,
+  },
+  postUser: {
+    color: "white",
+    paddingBottom: 10,
+    paddingHorizontal: 30,
+    fontSize: 13,
   },
 });
+
+function mapStateToProps(state) {
+  return {
+    postData: state.postData
+  }
+}
+
+export default connect(mapStateToProps)(Front);

@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     //paddingVertical: 50,
     marginBottom: 15,
     alignSelf: "center",
-    color: "#183446",
+    color: "#1B272E",
   },
   buttonActive: {
     backgroundColor: "#60BD6D",
