@@ -3,45 +3,46 @@ import { StyleSheet, Text, View, FlatList, Dimensions } from "react-native";
 import {connect} from "react-redux";
 
 import TheMoodBar from "../Components/TheMoodBar";
+import TheTagBar from "../Components/TheTagBar";
 
-import store from "../store/store";
-import postData from "../store/reducers/posts";
+const colors = ["#ED9B40","#D1495B","#007EA7"];
 
 class Front extends React.Component {
   handleTimestamp(timestamp) {
     if (timestamp == undefined) {
       return null;
     } else {
-      var date = new Date();
-      var timeNow = date.getTime();
-      var hours = Math.abs(timeNow - timestamp) / 36e5;
+      var now = new Date().getTime()/1000;
+      var hours = Math.round((now - timestamp)/1000/60/60);
       if (hours < 1) {
-        return "Less than one hour ago."
+        return "Posted less than one hour ago."
       }
       else {
-        return parseInt(hours) + " hours ago.";
+        return "Posted " + parseInt(hours) + " hours ago.";
       }
     }
+  }
+
+  getPostBackground() {
+    const number = Math.floor(Math.random() * 3); 
+    return colors[number]
   }
 
   render() {
     return (
       <View style={styles.container}>
         <TheMoodBar />
+        <TheTagBar />
         <View styles={styles.contentContainer}>
-          <Text style={styles.text}>
-            {"These are your " +
-              this.props.postData.length +
-              " most recent posts."}
-          </Text>
           <FlatList
             style={styles.postList}
-            data={this.props.postData}
+            data={this.props.postData.reverse()}
+            keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
-              <View style={styles.postContainer}>
-                <Text style={styles.post}>{item.id + ". " + item.text}</Text>
+              <View style={[styles.postContainer, {backgroundColor: this.getPostBackground()}]}>
+                <Text style={styles.post}>{item.text}</Text>
                 <Text style={styles.postUser}>
-                  - {item.user} - {this.handleTimestamp(item.timestamp)}
+                  - {this.handleTimestamp(item.timestamp)}
                 </Text>
               </View>
             )}
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
   },
   postContainer: {
     backgroundColor: "#4A5861",
+    marginVertical: 2,
     width: Dimensions.get("window").width,
   },
   post: {

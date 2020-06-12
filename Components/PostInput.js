@@ -8,52 +8,42 @@ import {
   Dimensions,
   Modal,
 } from "react-native";
-
-
+import {connect} from "react-redux";
 
 import store from "../store/store";
-import postData from "../store/reducers/posts";
 import { addPost } from "../store/actions";
+import { changeModuleState } from "../store/actions";
 
-export default class PostInput extends React.Component {
+class PostInput extends React.Component {
   state = {
-    userInput: "",
-    active: false,
-    postData: postData,
+    userInput: ""
   };
   closeLayer() {
     this.addPost();
-    this.setState({ active: false });
+    store.dispatch(changeModuleState(false));
   }
   onTextChange(text) {
     this.setState({ userInput: text });
   }
   addPost() {
-    var data = {
-      user: "DierkXCutie",
-      text: this.state.userInput,
-    };
-    store.dispatch(addPost(data));
-  }
-
-  componentDidUpdate(nextProps) {
-    // You don't have to do this check first, but it can help prevent an unneeded render
-    if (nextProps.active !== this.state.active) {
-      this.setState({ active: nextProps.active });
+    if (this.state.userInput.length > 0) {
+      var data = {
+        text: this.state.userInput,
+      };
+      store.dispatch(addPost(data));
     }
   }
-
   render() {
     return (
       <View style={styles.container}>
         <Modal
           animationType="slide"
           transparent={true}
-          visible={this.state.active}
+          visible={this.props.moduleActive}
         >
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
-              {"Enter your text here: " + this.state.postData.length}
+              {"Enter your text here: "}
             </Text>
             <TextInput
               style={styles.textInput}
@@ -79,12 +69,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
+    alignItems: "center"
   },
   modalView: {
     margin: 20,
     width: 300,
+    marginTop: 60,
+    alignSelf: "center",
     backgroundColor: "white",
     borderRadius: 8,
     padding: 35,
@@ -123,3 +114,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 });
+
+function mapStateToProps(state) {
+  return {
+    moduleActive: state.moduleState.active
+  }
+}
+
+export default connect(mapStateToProps)(PostInput);

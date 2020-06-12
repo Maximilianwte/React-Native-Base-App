@@ -10,31 +10,25 @@ import {
 
 import PostInput from "./PostInput";
 
+import store from "../store/store";
+import { changeModuleState } from "../store/actions";
+
 export default class TheMoodBar extends React.Component {
   state = {
     activeButton: 0,
-    postInputActive: false,
     barActive: true
   };
 
   handleButton = (id) => {
-    this.setState(
-      {
-        activeButton: id,
-      },
-      function () {
-        this.setState({
-          postInputActive: this.state.activeButton == 1 ? true : false,
-        });
-      }
-    );
-    /* this.setState({barActive: false}) */
+    store.dispatch(changeModuleState(id == 1 ? true : false));
+    this.setState({activeButton: id})
+    //this.setState({barActive: false})
   };
   handleButtonStyle(id) {
     return id == this.state.activeButton
       ? styles.buttonActive
       : styles.buttonInactive;
-  };
+  }
   handleBarHidden() {
     return !this.state.barActive ? styles.hidden : undefined;
   }
@@ -44,7 +38,7 @@ export default class TheMoodBar extends React.Component {
       <View>
         <View style={[styles.container, this.handleBarHidden()]}>
           <TouchableOpacity
-            activeOpacity="0.7"
+            activeOpacity={0.7}
             style={[styles.button, this.handleButtonStyle(1)]}
             onPress={() => this.handleButton(1)}
           >
@@ -57,7 +51,7 @@ export default class TheMoodBar extends React.Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            activeOpacity="0.7"
+            activeOpacity={0.7}
             style={[styles.button, this.handleButtonStyle(2)]}
             onPress={() => this.handleButton(2)}
           >
@@ -70,7 +64,7 @@ export default class TheMoodBar extends React.Component {
             </View>
           </TouchableOpacity>
           <TouchableOpacity
-            activeOpacity="0.7"
+            activeOpacity={0.7}
             style={[styles.button, this.handleButtonStyle(3)]}
             onPress={() => this.handleButton(3)}
           >
@@ -91,10 +85,10 @@ export default class TheMoodBar extends React.Component {
 
 const styles = StyleSheet.create({
   hidden: {
-    display: "none"
+    display: "none",
   },
   container: {
-    flexDirection: "row"
+    flexDirection: "row",
   },
   button: {
     flex: 1,
