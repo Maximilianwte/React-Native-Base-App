@@ -7,24 +7,26 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
+import { connect } from "react-redux";
 
 import PostInput from "./PostInput";
 
 import store from "../store/store";
-import { changeModuleState } from "../store/actions";
+import { changeModuleState, changeMood } from "../store/actions";
 
-export default class TheMoodBar extends React.Component {
-  state = {
-    activeButton: 0
-  };
+const moods = {
+  1: "happy",
+  2: "unsure",
+  3: "sad"
+}
 
+class TheMoodBar extends React.Component {
   handleButton = (id) => {
     store.dispatch(changeModuleState(id == 1 ? true : false));
-    this.setState({activeButton: id})
-    //this.setState({barActive: false})
+    store.dispatch(changeMood(moods[id]));
   };
   handleButtonStyle(id) {
-    return id == this.state.activeButton
+    return moods[id] == this.props.mood
       ? styles.buttonActive
       : styles.buttonInactive;
   }
@@ -76,7 +78,7 @@ export default class TheMoodBar extends React.Component {
             </View>
           </TouchableOpacity>
         </View>
-        <PostInput active={this.state.postInputActive} />
+        <PostInput />
       </View>
     );
   }
@@ -124,3 +126,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
+
+function mapStateToProps(state) {
+  return {
+    mood: state.mood,
+  };
+}
+
+export default connect(mapStateToProps)(TheMoodBar);

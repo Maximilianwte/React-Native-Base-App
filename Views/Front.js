@@ -13,11 +13,35 @@ import TheMoodBar from "../Components/TheMoodBar";
 import TheTagBar from "../Components/TheTagBar";
 import TheTextComponent from "../Components/TheTextComponent";
 
+const tagTypes = [
+  "#happy",
+  "#unsure",
+  "#sad",
+  "#badDay",
+  "#MS",
+  "#foodPoisoning",
+  "#wrongFootWakeup",
+  "#badHairDay",
+];
+
 class Front extends React.Component {
+  renderTag(item) {
+    if (this.props.activeTags.includes(item)) {
+      return (
+        <View>
+          <Text style={styles.heading}>{item}</Text>
+          <ScrollView style={styles.scrollView} horizontal={true}>
+            {this.props.postData[item.substring(1, item.length)].map((item) => (
+              <TheTextComponent item={item} />
+            ))}
+          </ScrollView>
+        </View>
+      );
+    }
+  }
+
   render() {
-    const textItems = this.props.postData.reverse().map((item) => (
-      <TheTextComponent item={item}/>
-    ))
+    const categories = tagTypes.map((item) => this.renderTag(item));
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -26,12 +50,7 @@ class Front extends React.Component {
         >
           <TheMoodBar />
           <TheTagBar />
-          <View styles={styles.contentContainer}>
-            <Text style={styles.heading}>#sad</Text>
-            <ScrollView style={styles.scrollView} horizontal={true}>
-              {textItems}
-            </ScrollView>
-          </View>
+          <View styles={styles.contentContainer}>{categories}</View>
         </ImageBackground>
       </View>
     );
@@ -59,13 +78,15 @@ const styles = StyleSheet.create({
     color: "#4A5861",
     marginLeft: 20,
     marginBottom: 5,
-    marginTop: Dimensions.get("window").height / 15
-  }
+    marginTop: Dimensions.get("window").height / 15,
+  },
 });
 
 function mapStateToProps(state) {
   return {
     postData: state.postData,
+    mood: state.mood,
+    activeTags: state.activeTags,
   };
 }
 

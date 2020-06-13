@@ -7,40 +7,45 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
+import { connect } from "react-redux";
+
+import store from "../store/store";
+import { handleTags } from "../store/actions";
+
+const tagTypes = [
+  "#happy",
+  "#unsure",
+  "#sad",
+  "#badDay",
+  "#MS",
+  "#foodPoisoning",
+  "#wrongFootWakeup",
+  "#badHairDay",
+]
 
 class TheTagBar extends React.Component {
   state = {
-    tags: [
-      "#happy",
-      "#unsure",
-      "#sad",
-      "#badDay",
-      "#MS",
-      "#foodPoisoning",
-      "#wrongFootWakeup",
-      "#badHairDay",
-    ],
     activeTags: [],
   };
 
   handleTag = (id) => {
-    if (!this.state.activeTags.includes(id)) {
-      this.setState({ activeTags: [...this.state.activeTags, id] });
-    } else {
-      this.setState({
-        activeTags: this.state.activeTags.filter((item) => item != id),
-      });
-    }
+    store.dispatch(handleTags(id))
   };
 
   handleTagColor = (id) => {
-    return this.state.activeTags.includes(id)
+    return this.props.activeTags.includes(id)
       ? styles.tagActive
       : styles.tagInactive;
   };
 
+  handleTagTextColor = (id) => {
+    return this.props.activeTags.includes(id)
+    ? "white"
+    : "black";
+  }
+
   render() {
-    const tags = this.state.tags.map((item) => (
+    const tags = tagTypes.map((item) => (
       <TouchableOpacity
         key={item}
         style={[styles.tag, this.handleTagColor(item)]}
@@ -49,7 +54,7 @@ class TheTagBar extends React.Component {
           this.handleTag(item);
         }}
       >
-        <Text style={styles.tagText}>{item}</Text>
+        <Text style={[styles.tagText]}>{item}</Text>
       </TouchableOpacity>
     ));
     return (
@@ -73,17 +78,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   tagInactive: {
-    backgroundColor: "#4A5861",
+    backgroundColor: "#F09EB7",
   },
   tagActive: {
     backgroundColor: "#60BD6D",
   },
   tagText: {
-    color: "white",
     paddingVertical: 5,
     paddingHorizontal: 9,
     fontSize: 16,
+    color: "black"
   },
 });
 
-export default TheTagBar;
+function mapStateToProps(state) {
+  return {
+    activeTags: state.activeTags,
+  };
+}
+
+export default connect(mapStateToProps)(TheTagBar);
+
