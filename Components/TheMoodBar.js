@@ -15,8 +15,7 @@ import { changeModuleState } from "../store/actions";
 
 export default class TheMoodBar extends React.Component {
   state = {
-    activeButton: 0,
-    barActive: true
+    activeButton: 0
   };
 
   handleButton = (id) => {
@@ -29,14 +28,14 @@ export default class TheMoodBar extends React.Component {
       ? styles.buttonActive
       : styles.buttonInactive;
   }
-  handleBarHidden() {
-    return !this.state.barActive ? styles.hidden : undefined;
-  }
 
   render() {
     return (
       <View>
-        <View style={[styles.container, this.handleBarHidden()]}>
+        <View>
+          <Text style={styles.header}>How are you feeling today?</Text>
+        </View>
+        <View style={[styles.container]}>
           <TouchableOpacity
             activeOpacity={0.7}
             style={[styles.button, this.handleButtonStyle(1)]}
@@ -84,29 +83,35 @@ export default class TheMoodBar extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  hidden: {
-    display: "none",
+  header: {
+    color: "#4A5861",
+    fontSize: 22,
+    marginLeft: 8
   },
   container: {
     flexDirection: "row",
+    marginTop: 2,
+    //backgroundColor: "#4a586170"
   },
   button: {
     flex: 1,
     alignContent: "center",
     justifyContent: "flex-end",
-    height: 120,
+    height: 110,
+    borderRadius: 8,
+    marginHorizontal: 2
   },
   text: {
     //paddingVertical: 50,
     marginBottom: 15,
     alignSelf: "center",
-    color: "#1B272E",
+    color: "white",
   },
   buttonActive: {
     backgroundColor: "#60BD6D",
   },
   buttonInactive: {
-    backgroundColor: "#5EA667",
+    backgroundColor: "#4A5861",
   },
   svgItem: {
     alignItems: "center",

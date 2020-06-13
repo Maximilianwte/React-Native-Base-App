@@ -11,6 +11,8 @@ import {
 class TheTagBar extends React.Component {
   state = {
     tags: [
+      "#happy",
+      "#unsure",
       "#sad",
       "#badDay",
       "#MS",
@@ -63,7 +65,7 @@ class TheTagBar extends React.Component {
 const styles = StyleSheet.create({
   scrollView: {
     width: Dimensions.get("window").width,
-    backgroundColor: "#0A141A",
+    //backgroundColor: "#4a586170"
   },
   tag: {
     marginVertical: 7,

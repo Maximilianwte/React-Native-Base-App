@@ -14,6 +14,11 @@ import store from "../store/store";
 import { addPost } from "../store/actions";
 import { changeModuleState } from "../store/actions";
 
+const textMessage = {
+  happy: "We're glad that you have a nice day. Others might have a bad day today. If you like, share your positive thoughts to make other people feel better today.",
+  sad: ""
+}
+
 class PostInput extends React.Component {
   state = {
     userInput: ""
@@ -42,10 +47,14 @@ class PostInput extends React.Component {
           visible={this.props.moduleActive}
         >
           <View style={styles.modalView}>
+            <Text style={[styles.modalText, {textAlign: "left"}]}>
+              {textMessage["happy"]}
+            </Text>
             <Text style={styles.modalText}>
               {"Enter your text here: "}
             </Text>
             <TextInput
+            multiline={true}
               style={styles.textInput}
               onChangeText={(text) => this.onTextChange(text)}
               value={this.state.userInput}
@@ -73,12 +82,13 @@ const styles = StyleSheet.create({
   },
   modalView: {
     margin: 20,
-    width: 300,
+    width: (Dimensions.get("window").width / 10) * 9,
     marginTop: 60,
     alignSelf: "center",
     backgroundColor: "white",
     borderRadius: 8,
     padding: 35,
+    fontSize: 20,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -90,24 +100,24 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    backgroundColor: "#60BD6D",
+    backgroundColor: "#F09EB7",
     borderRadius: 8,
   },
   textStyle: {
     color: "#183446",
-    paddingHorizontal: 15,
+    paddingHorizontal: 18,
     paddingVertical: 8,
-    fontSize: 18,
+    fontSize: 20,
     textAlign: "center",
   },
   modalText: {
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 15,
     textAlign: "center",
   },
   textInput: {
-    height: 40,
-    width: 230,
+    height: 100,
+    width: (Dimensions.get("window").width / 10) * 8,
     fontSize: 18,
     borderColor: "gray",
     borderWidth: 1,
